@@ -4,8 +4,6 @@ class Probability:
     def __init__(self,fore,given):
         self.fore = fore;
         self.given = given;
-
-
     def __eq__(self, other):
         return self.fore == other.fore and self.given == other.given;
     def __hash__(self):
@@ -48,13 +46,11 @@ def readdata(filename = ''):
                     p2.fore = cur_fore_2;
                     p2.given = set(cur_given);
                     p2.pro = pro[i*2+1];
-                    data[p1] = pro[i*2+0];
-                    data[p2] = pro[i*2+1];
+                    data[p1] = float(pro[i*2+0]);
+                    data[p2] = float(pro[i*2+1]);
     return data;
 
-
-
-
-data = readdata('aima-alarm.xml')
+data = readdata('dog-problem.xml')
 p1 = Probability('a',{'b','!e'});
-print(data[p1])
+# for key,value in data.items():
+#     print(key.fore,'|',key.given,value);
