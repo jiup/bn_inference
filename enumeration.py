@@ -4,11 +4,11 @@ from test import Probability
 
 def Normalize(l=[]):
     res = [0] * l.__len__()
-    sum = 0.0
+    s = 0.0
     for num in l:
-        sum += num
+        s += num
     for i in range(l.__len__()):
-        res[i] = l[i] / sum
+        res[i] = l[i] / s
     return res
 
 
@@ -16,11 +16,12 @@ def Enumeration_Ask(X='', e=[], bn=[], data={}):
     distribution = []
     query_variable = [X.lower(), '!' + X.lower()]
 
-    for v in query_variable:
+    for x in query_variable:
         tmp_e = e.copy()
         tmp_bn = bn.copy()
-        tmp_e.append(v)
-        tmp_bn = [v] + tmp_bn
+        tmp_e.append(x)
+        tmp_bn = [x] + tmp_bn
+        print([tmp_bn, tmp_e])
         dis = Enumeration_ALL(tmp_bn, tmp_e, data)
         distribution.append(dis)
     return Normalize(distribution)
@@ -30,21 +31,14 @@ def match(s=set(), e=[]):
     if (s.__len__() == 0): return True
     for i in s:
         if i not in e:
+            # print([s, e])
             return False
     return True
 
 
 def Enumeration_ALL(bn, e, data):
-    empty = True
-    #    first_Variable = ''
-
-    if (bn.__len__() == 0): return 1
-
-    # for element in bn:
-    #     if element>='A' and element<='Z':
-    #         empty = False
-    #         break
-    # if (empty): return 1.0
+    if bn.__len__() == 0:
+        return 1
 
     if bn[0] in e:
         parents = []
@@ -58,12 +52,11 @@ def Enumeration_ALL(bn, e, data):
                 return data[parent] * Enumeration_ALL(rest, e, data)
 
     else:
-        Variable = bn[0]
-        variable_true = Variable.lower()
-        variable_false = '!' + Variable.lower()
+        variable_true = bn[0].lower()
+        variable_false = '!' + bn[0].lower()
         e_true = e.copy()
-        e_false = e.copy()
         e_true.append(variable_true)
+        e_false = e.copy()
         e_false.append(variable_false)
         parents = []
         given = set()
