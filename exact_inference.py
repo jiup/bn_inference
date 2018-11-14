@@ -46,9 +46,23 @@ def enumerate_all(variables, evidences, data):
             if parent_e.issubset(evidences):
                 return data[Probability(true_var, parent_e)] * enumerate_all(variables[1:], evidences + [true_var], data) + \
                        data[Probability(false_var, parent_e)] * enumerate_all(variables[1:], evidences + [false_var], data)
-    return 0
+
+    return enumerate_all(variables[1:] + [variables[0]], evidences, data)
 
 
-path = 'aima-alarm.xml'
-data = test.readdata(path)
-print(enumerate_ask('B', ['E', 'A', 'j', 'm'], ['j', 'm'], data))
+def get_variables(query, evidences, data):
+    variables = set()
+    for prob in data.keys():
+        v = prob.fore
+        if not v.startswith('!') and v != query.lower():
+            if v in evidences:
+                variables.add(v)
+            else:
+                variables.add(v.upper())
+    return list(variables)
+
+
+_data = test.readdata('aima-alarm.xml')
+_query = 'B'
+_evidences = ['j', 'm']
+print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
