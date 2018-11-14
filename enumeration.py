@@ -28,7 +28,8 @@ def Enumeration_Ask(X='', e=[], bn=[], data={}):
 
 
 def all_in(s=set(), e=[]):
-    if (s.__len__() == 0): return True
+    if s.__len__() == 0:
+        return True
     for i in s:
         if i not in e:
             # print([s, e])
@@ -65,13 +66,8 @@ def Enumeration_ALL(bn, e, data):
                 rest_bn = bn[1:]
                 given = parent.given
                 break
-        e_true = e.copy()
-        e_false = e.copy()
-        e_true.append(variable_true)
-        e_false.append(variable_false)
-        return data[Probability(variable_true, given)] * Enumeration_ALL(rest_bn, e_true, data) + \
-            data[Probability(variable_false, given)] * Enumeration_ALL(rest_bn, e_false, data)
+        return data[Probability(variable_true, given)] * Enumeration_ALL(rest_bn, e.copy() + [variable_true], data) + \
+            data[Probability(variable_false, given)] * Enumeration_ALL(rest_bn, e.copy() + [variable_false], data)
 
 
-data = test.readdata('aima-alarm.xml')
-print(Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], data))
+print(Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], test.readdata('aima-alarm.xml')))

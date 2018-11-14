@@ -8,6 +8,8 @@ class Probability:
         return self.fore == other.fore and self.given == other.given;
     def __hash__(self):
         return self.fore.__len__();
+    def __str__(self):
+        return self.fore + ' | ' + str(self.given)
 
 
 def readdata(filename = ''):
