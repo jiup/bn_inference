@@ -10,17 +10,18 @@ def Normalize(l = []):
         res[i] = l[i]/sum;
     return res;
 
-def Enumeration_Ask(X='',e=[],bn=[],data={}):
+def Enumeration_Ask(X='',e=[],bn=[],data={},parents = {}):
     distribution = [];
     query_variable = [];
     query_variable.append(X.lower());
     query_variable.append('!'+X.lower());
-
     for queryvariable in query_variable:
         tmp_e = e.copy();
         tmp_bn = bn.copy();
         tmp_e.append(queryvariable);
-        tmp_bn = [queryvariable]+tmp_bn;
+#        tmp_bn = [queryvariable]+tmp_bn;
+        tmp_bn.append(queryvariable);
+        tmp_bn = test.sort(tmp_bn,parents);
         dis =Enumeration_ALL(tmp_bn,tmp_e,data);
         distribution.append(dis);
     return Normalize(distribution);
@@ -33,17 +34,7 @@ def match(s = set(),e = []):
     return True;
 
 def Enumeration_ALL(bn,e,data):
-    empty = True;
-#    first_Variable = '';
-
     if(bn.__len__()==0):return 1;
-
-    # for element in bn:
-    #     if element>='A' and element<='Z':
-    #         empty = False;
-    #         break;
-    # if (empty): return 1.0;
-
     if bn[0] in e:
         parents = [];
         for key in data.keys():
@@ -54,7 +45,6 @@ def Enumeration_ALL(bn,e,data):
             if(match(given,e)):
                 rest = bn[1:];
                 return data[parent]*Enumeration_ALL(rest,e,data);
-
     else:
         Variable  = bn[0];
         variable_true = Variable.lower();
@@ -78,6 +68,7 @@ def Enumeration_ALL(bn,e,data):
         p_false = Probability(variable_false,given);
         return data[p_true]*Enumeration_ALL(rest,e_true,data)+data[p_false]*Enumeration_ALL(rest,e_false,data);
 
-data = test.readdata('aima-alarm.xml');
-l = Enumeration_Ask('B',['j','m'],['E','A','j','m'],data);
+
+data,parents = test.readdata('dog-problem.xml');
+l = Enumeration_Ask('BOWEL-PROBLEM',['dog-out','hear-bark'],['FAMILY-OUT','LIGHT-ON','dog-out','hear-bark'],data,parents);
 print(l)

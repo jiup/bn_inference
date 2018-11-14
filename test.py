@@ -9,10 +9,10 @@ class Probability:
     def __hash__(self):
         return self.fore.__len__();
 
-
 def readdata(filename = ''):
     root = ET.parse(filename).getroot();
     data = dict();
+    parents = dict();
     for definition in root.iter('DEFINITION'):
         fore = '';
         given = [];
@@ -21,7 +21,7 @@ def readdata(filename = ''):
             if(child.tag == 'FOR'):
                 fore = child.text;
             if(child.tag == 'GIVEN'):
-                given.append(child.text);
+                given.append(child.text.lower());
             if(child.tag == 'TABLE'):
                 table = child.text;
                 pro = table.strip().split();
@@ -29,6 +29,9 @@ def readdata(filename = ''):
                 for i in range(len(pro) // 2):
                     cur_fore_1 = fore.lower();
                     cur_fore_2 = '!'+fore.lower();
+                    if (i == 0):
+                        parents[cur_fore_1] = given;
+                        parents[cur_fore_2] = given;
                     cur_given = [];
                     tmp = i;
                     for g in range(givensize):
@@ -48,9 +51,42 @@ def readdata(filename = ''):
                     p2.pro = pro[i*2+1];
                     data[p1] = float(pro[i*2+0]);
                     data[p2] = float(pro[i*2+1]);
-    return data;
+    return data,parents;
 
-data = readdata('dog-problem.xml')
+def Prob(fore='',parents={},data = {},event = []):
+    given = set(parents[fore]);
+    for g in given:
+        if ('!' + g) in event:
+            given.discard(g);
+            given.add('!' + g);
+
+    p = Probability(fore, given);
+    probability = data[p];
+    return probability;
+
+def sort(bn = [], parents = {}):
+    queue = bn.copy();
+    res = [];
+    while(queue.__len__() != 0):
+        first_element = queue.pop(0);
+        given = parents[first_element.lower()];
+        if(len(given) == 0):
+            res.append(first_element);
+            continue;
+        else:
+            b = True;
+            for g in given:
+                if(g not in res) and (g.upper() not in res) and (('!'+g) not in res):
+                    b = False;
+                    break;
+            if(b):
+                res.append(first_element);
+            else:
+                queue.append(first_element);
+    return res;
+
+data,parents = readdata('dog-problem.xml')
 p1 = Probability('a',{'b','!e'});
-# for key,value in data.items():
-#     print(key.fore,'|',key.given,value);
+def t(l = []):
+    l = [1];
+
