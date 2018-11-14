@@ -49,4 +49,6 @@ def enumerate_all(variables, evidences, data):
     return 0
 
 
+path = 'aima-alarm.xml'
+data = test.readdata(path)
 print(enumerate_ask('B', ['E', 'A', 'j', 'm'], ['j', 'm'], data))
