@@ -34,20 +34,20 @@ def tp_sort(vars, bn):
                 result.append(var)
         else:
             result.append(var)
-    # result.reverse()
+    result.reverse()
     return result
 
 def enumeration_ask(X, e, bn):
     variables = set()
     for k in bn.keys():
         variables.add(k.fore.strip('!').upper())
-    e_x = copy.deepcopy(e)
+    e_x = copy.copy(e)
     e_x.add(X.lower())
-    e_not_x = copy.deepcopy(e)
+    e_not_x = copy.copy(e)
     e_not_x.add('!' + X.lower())
     result = dict()
-    result[X.lower()] = enumerate_all(copy.deepcopy(tp_sort(list(variables), bn)), e_x, bn)
-    result['!' + X.lower()] = enumerate_all(copy.deepcopy(tp_sort(list(variables), bn)), e_not_x, bn)
+    result[X.lower()] = enumerate_all(copy.copy(tp_sort(list(variables), bn)), e_x, bn)
+    result['!' + X.lower()] = enumerate_all(copy.copy(tp_sort(list(variables), bn)), e_not_x, bn)
     normalize(result)
     return result
 
@@ -71,24 +71,24 @@ def enumerate_all(variables, e, data):
     y = variables.pop()
     sum_p = 0
     if in_e(y, e) == 1:
-        e_y = copy.deepcopy(e)
+        e_y = copy.copy(e)
         e_y.add(y.lower())
-        e_not_y = copy.deepcopy(e)
+        e_not_y = copy.copy(e)
         e_not_y.add('!' + y.lower())
         for keys, val in data.items():
             if keys.fore == y.lower() and check(keys, e):
-                    sum_p += (float(val) * enumerate_all(copy.deepcopy(variables), e_y, data))
+                    sum_p += (float(val) * enumerate_all(copy.copy(variables), e_y, data))
             elif ((keys.fore == '!' + y.lower()) or (keys.fore == y.lower().strip('!'))) and (keys.fore != y.lower()) and check(keys, e):
-                    sum_p += (float(val) * enumerate_all(copy.deepcopy(variables), e_not_y, data))
+                    sum_p += (float(val) * enumerate_all(copy.copy(variables), e_not_y, data))
     else:
         if in_e(y, e) == 2:
             for keys, val in data.items():
                 if keys.fore == y.lower() and check(keys, e):
-                        sum_p += (float(val) * enumerate_all(variables, copy.deepcopy(e), data))
+                        sum_p += (float(val) * enumerate_all(variables, copy.copy(e), data))
         else:
             for keys, val in data.items():
                 if ((keys.fore == '!' + y.lower()) or (keys.fore == y.lower().strip('!'))) and (keys.fore != y.lower()) and check(keys, e):
-                        sum_p += (float(val) * enumerate_all(variables, copy.deepcopy(e), data))
+                        sum_p += (float(val) * enumerate_all(variables, copy.copy(e), data))
     return sum_p
 
 

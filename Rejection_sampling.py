@@ -18,7 +18,7 @@ def proior_simple(bn):
     variables = set()
     for k in bn.keys():
         variables.add(k.fore.strip('!').upper())
-    variables = tp_sort(list(variables), bn)
+    variables = tp_sort(list(variables), bn).reverse()
     for variable in variables:
         rand_p = random.uniform(0, 1)
         for keys, val in bn.items():
@@ -49,4 +49,4 @@ def rejection_sampling(X, e, bn, N):
 
 
 data = readdata('aima-alarm.xml')
-print(rejection_sampling('B', {'j', 'm'}, data, 100000))
+# print(rejection_sampling('B', {'j', 'm'}, data, 100000))
