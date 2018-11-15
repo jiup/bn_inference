@@ -1,52 +1,39 @@
-from Enumeration import *
-import random
+import random;
+import enumeration
+import test
 
+def Prior_sample(bn = [],data = {},parents = {}):
+    bn = enumeration.sort(bn,parents);
+    for index in range(bn.__len__()):
+        Variable = bn[index];
+        variable = Variable.lower();
+        given = set(parents[variable]);
+        for g in given:
+            if('!'+g) in bn:
+                given.discard(g);
+                given.add('!'+g);
 
-def given_in(givens, e):
-    if len(givens) == 0:
-        return True
-    flg = True
-    for given in givens:
-        if given not in e:
-            flg = False
-            break
-    return flg
+        p = enumeration.Probability(variable,given);
+        probability = data[p];
+        if(probability < random.random()):
+            variable = '!'+variable;
+        bn[index] = variable;
+    return bn;
 
-
-def proior_simple(bn):
-    e = set()
-    variables = set()
-    for k in bn.keys():
-        variables.add(k.fore.strip('!').upper())
-    variables = tp_sort(list(variables), bn).reverse()
-    for variable in variables:
-        rand_p = random.uniform(0, 1)
-        for keys, val in bn.items():
-            if keys.fore == variable.lower() and given_in(keys.given, e):
-                p = float(val)
-        if rand_p < p:
-            e.add(variable.lower())
-        else:
-            e.add('!' + variable.lower())
-    return e
-
-
-def rejection_sampling(X, e, bn, N):
-    result = {X.lower():0,'!'+X.lower():0}
+def Rejection_sample(X='',e=[],bn=[],N=0,data = {},parents = {}):
+    x_true = X.lower();
+    x_false = '!'+X.lower();
+    x_true_count = 0;
+    x_false_count = 0;
     for i in range(N):
-        flg = True
-        sample_es = proior_simple(bn)
-        for sample_e in sample_es:
-            if in_e(sample_e,e) == 3:
-                flg = False
-                break
-        if flg and X.lower() in sample_es:
-            result[X.lower()] += 1
-        elif flg and '!' + X.lower() in sample_es:
-            result['!' + X.lower()] += 1
-    normalize(result)
-    return result
+        event = Prior_sample(bn,data,parents);
+        if(event.__len__() != (set(event).union(set(e))).__len__()): continue;
+        else:
+            if(x_true in event): x_true_count+=1;
+            if(x_false in event): x_false_count+=1;
+    x_count = x_true_count+x_false_count;
+    return [x_true_count/x_count,x_false_count/x_count];
 
-
-data = readdata('aima-alarm.xml')
-# print(rejection_sampling('B', {'j', 'm'}, data, 100000))
+# data,parents = test.readdata('aima-alarm.xml');
+# l = Rejection_sample('B',['j','m'],['A','E','J','M','B'],100000,data,parents);
+# print(l);

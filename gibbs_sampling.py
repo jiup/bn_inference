@@ -1,7 +1,7 @@
 import random
 
-from Rejection_sampling import *
-import Enumeration
+from rejection_sampling import *
+import enumeration
 
 def Gibbs_sampling(X, e, bn, N):
     result = {X.lower(): 0, '!' + X.lower(): 0}
@@ -30,7 +30,7 @@ def Gibbs_sampling(X, e, bn, N):
             for child in children:
                 children_parent = children_parent | (get_parents(child, bn) & set(tmp))
             enumerate_e = (parent | children | children_parent) - {sample[i]}
-            p = Enumeration.enumeration_ask(sample[i].strip('!'),enumerate_e , bn)
+            p = enumeration.enumeration_ask(sample[i].strip('!'), enumerate_e, bn)
             if rand_p < p[sample[i].strip('!')]:
                 sample[i] = sample[i].strip('!')
             else:
