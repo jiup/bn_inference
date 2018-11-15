@@ -1,8 +1,6 @@
 import random;
 import enumeration
 import test
-class Event:
-    pass;
 
 def Prior_sample(bn = [],data = {},parents = {}):
     bn = enumeration.sort(bn,parents);
@@ -36,6 +34,6 @@ def Rejection_sample(X='',e=[],bn=[],N=0,data = {},parents = {}):
     x_count = x_true_count+x_false_count;
     return [x_true_count/x_count,x_false_count/x_count];
 
-data,parents = test.readdata('aima-alarm.xml');
-l = Rejection_sample('B',['j','m'],['A','E','J','M','B'],100000,data,parents);
-print(l);
+# data,parents = test.readdata('aima-alarm.xml');
+# l = Rejection_sample('B',['j','m'],['A','E','J','M','B'],100000,data,parents);
+# print(l);
