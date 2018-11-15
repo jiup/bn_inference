@@ -5,8 +5,6 @@ from test import Probability
 def normalize(dist):
     result = []
     s = sum(dist)
-    if s == 0:
-        return [0] * len(dist)
     for i in range(len(dist)):
         result.append(dist[i] / s)
     return result
@@ -24,10 +22,18 @@ def parent_es(variable, data):
     return result
 
 
+def valid_query(data, var):
+    for prob in data.keys():
+        if prob.fore == var.lower() and not var.startswith('!'):
+            return True
+    return False
+
+
 def enumerate_ask(query, variables, evidences, data):
-    query_true, query_false = to_observed_pair(query)
-    return normalize([enumerate_all(variables + [query_true], evidences + [query_true], data),
-                      enumerate_all(variables + [query_false], evidences + [query_false], data)])
+    if valid_query(data, query):
+        query_true, query_false = to_observed_pair(query)
+        return normalize([enumerate_all(variables + [query_true], evidences + [query_true], data),
+                          enumerate_all(variables + [query_false], evidences + [query_false], data)])
 
 
 def enumerate_all(variables, evidences, data):
