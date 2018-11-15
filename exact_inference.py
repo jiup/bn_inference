@@ -68,7 +68,7 @@ def get_variables(query, evidences, data):
     return list(variables)
 
 
-_data = test.readdata('aima-alarm.xml')
+_data, _parents = test.readdata('aima-alarm.xml')
 _query = 'B'
 _evidences = ['j', 'm']
 print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))

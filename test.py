@@ -87,8 +87,6 @@ def sort(bn = [], parents = {}):
                 queue.append(first_element);
     return res;
 
-data,parents = readdata('dog-problem.xml')
-p1 = Probability('a',{'b','!e'});
-def t(l = []):
-    l = [1];
-
+# data,parents = readdata('aima-alarm.xml')
+# p1 = Probability('a',{'b','!e'});
+# print(parents)
