@@ -1,73 +1,74 @@
-import test
-from test import Probability
+import test;
+from test import Probability;
 
-
-def Normalize(l=[]):
-    res = [0] * l.__len__()
-    s = 0.0
+def Normalize(l = []):
+    res = [0]*l.__len__();
+    sum = 0.0;
     for num in l:
-        s += num
+        sum += num;
     for i in range(l.__len__()):
-        res[i] = l[i] / s
-    return res
+        res[i] = l[i]/sum;
+    return res;
 
+def Enumeration_Ask(X='',e=[],bn=[],data={},parents = {}):
+    distribution = [];
+    query_variable = [];
+    query_variable.append(X.lower());
+    query_variable.append('!'+X.lower());
+    for queryvariable in query_variable:
+        tmp_e = e.copy();
+        tmp_bn = bn.copy();
+        tmp_e.append(queryvariable);
+#        tmp_bn = [queryvariable]+tmp_bn;
+        tmp_bn.append(queryvariable);
+        tmp_bn = test.sort(tmp_bn,parents);
+        dis =Enumeration_ALL(tmp_bn,tmp_e,data);
+        distribution.append(dis);
+    return Normalize(distribution);
 
-def Enumeration_Ask(X='', e=[], bn=[], data={}):
-    distribution = []
-    query_variable = [X.lower(), '!' + X.lower()]
-
-    for x in query_variable:
-        tmp_e = e.copy()
-        tmp_bn = bn.copy()
-        tmp_e.append(x)
-        tmp_bn = [x] + tmp_bn
-        # print(tmp_bn, tmp_e)
-        dis = Enumeration_ALL(tmp_bn, tmp_e, data)
-        distribution.append(dis)
-    return Normalize(distribution)
-
-
-def all_in(s=set(), e=[]):
-    if s.__len__() == 0:
-        return True
+def match(s = set(),e = []):
+    if(s.__len__() == 0):return True;
     for i in s:
         if i not in e:
-            # print([s, e])
-            return False
-    return True
+            return False;
+    return True;
 
-
-def parents(variable, data):
-    ps = []
-    for key in data.keys():
-        if key.fore == variable:
-            ps.append(key)
-    return ps
-
-
-def Enumeration_ALL(bn, e, data):
-    if bn.__len__() == 0:
-        return 1
-
+def Enumeration_ALL(bn,e,data):
+    if(bn.__len__()==0):return 1;
     if bn[0] in e:
-        for parent in parents(bn[0], data):
-            if all_in(parent.given, e):
-                rest_bn = bn[1:]
-                return data[parent] * Enumeration_ALL(rest_bn, e, data)
-
+        parents = [];
+        for key in data.keys():
+            if(key.fore == bn[0]):
+                parents.append(key);
+        for parent in parents:
+            given = parent.given;
+            if(match(given,e)):
+                rest = bn[1:];
+                return data[parent]*Enumeration_ALL(rest,e,data);
     else:
-        variable_true = bn[0].lower()
-        variable_false = '!' + bn[0].lower()
-        given = set()
-        rest_bn = []
-        # variable_true and variable_false both represents the same node
-        for parent in parents(variable_true, data):
-            if all_in(parent.given, e):
-                rest_bn = bn[1:]
-                given = parent.given
-                break
-        return data[Probability(variable_true, given)] * Enumeration_ALL(rest_bn, e.copy() + [variable_true], data) + \
-            data[Probability(variable_false, given)] * Enumeration_ALL(rest_bn, e.copy() + [variable_false], data)
+        Variable  = bn[0];
+        variable_true = Variable.lower();
+        variable_false = '!'+Variable.lower();
+        e_true = e.copy();
+        e_false = e.copy();
+        e_true.append(variable_true);
+        e_false.append(variable_false);
+        parents = [];
+        given = set();
+        rest = [];
+        for key in data.keys():
+            if(key.fore == variable_true):
+                parents.append(key);
+        for parent in parents:
+            tmp_given = parent.given;
+            if(match(tmp_given,e)):
+                rest = bn[1:];
+                given = tmp_given;
+        p_true = Probability(variable_true,given);
+        p_false = Probability(variable_false,given);
+        return data[p_true]*Enumeration_ALL(rest,e_true,data)+data[p_false]*Enumeration_ALL(rest,e_false,data);
 
 
-print(Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], test.readdata('aima-alarm.xml')))
+data,parents = test.readdata('dog-problem.xml');
+l = Enumeration_Ask('BOWEL-PROBLEM',['dog-out','hear-bark'],['FAMILY-OUT','LIGHT-ON','dog-out','hear-bark'],data,parents);
+print(l)
