@@ -36,11 +36,12 @@ def Gibbs_sampling(X, e, bn, N):
             else:
                 sample[i] = sample[i].strip('!')
                 sample[i] = '!' + sample[i]
-            if X.lower() in sample:
-                result[X.lower()] += 1
-            elif '!' + X.lower() in sample:
-                result['!' + X.lower()] += 1
             tmp = sample + list(e)
+        if X.lower() in sample:
+            result[X.lower()] += 1
+        elif '!' + X.lower() in sample:
+            result['!' + X.lower()] += 1
+
     normalize(result)
     return result
 
