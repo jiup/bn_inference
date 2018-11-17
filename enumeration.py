@@ -61,11 +61,11 @@ def Enumeration_ALL(bn, e, data):
         given = set()
         rest = []
         for key in data.keys():
-            if (key.fore == variable_true):
+            if key.fore == variable_true:
                 parents.append(key)
         for parent in parents:
             tmp_given = parent.given
-            if (match(tmp_given, e)):
+            if match(tmp_given, e):
                 rest = bn[1:]
                 given = tmp_given
         p_true = Probability(variable_true, given)

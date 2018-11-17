@@ -1,5 +1,5 @@
 from test import *
-
+import sys
 
 def normalize(dist):
     result = []
@@ -73,3 +73,5 @@ def get_variables(query, evidences, data):
 # _query = 'A'
 # _evidences = ['!e', 'j', '!b', 'm']
 # print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
+if __name__ == '__main':
+    print(sys.argv)

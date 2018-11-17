@@ -66,4 +66,4 @@ def gibbs_sampling(X, e, bn, parents, N):
 
 
 data, parents = readdata('aima-alarm.xml')
-print(gibbs_sampling('B', {'j', 'm'}, data, parents, 100000))
+print(gibbs_sampling('B', {'j', 'm'}, data, parents, 10000))
