@@ -63,12 +63,15 @@ def get_variables(query, evidences, data):
         if not v.startswith('!') and v != query.lower():
             if v in evidences:
                 variables.add(v)
+            elif '!' + v in evidences:
+                variables.add('!' + v)
             else:
                 variables.add(v.upper())
     return list(variables)
 
 
 _data, _parents = test.readdata('aima-alarm.xml')
-_query = 'B'
-_evidences = ['j', 'm']
+_query = 'A'
+_evidences = ['!e', 'j', '!b', 'm']
+print(get_variables(_query, _evidences, _data))
 print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
