@@ -1,6 +1,6 @@
 import test
 import random
-
+import sys
 
 def likelihood_weighting(X='', e=[], bn=[], N=1000, data={}, parents={}):
     x_true = X.lower()
@@ -40,5 +40,27 @@ def weighted_sample(bn=[], e=[], data={}, parents={}):
     return event, w
 
 
-data, parents = test.readdata('aima-alarm.xml')
-print(likelihood_weighting('B', ['j', 'm'], ['A', 'E', 'J', 'M', 'B'], 100000, data, parents))
+# data, parents = test.readdata('aima-alarm.xml')
+# print(likelihood_weighting('B', ['j', 'm'], ['A', 'E', 'J', 'M', 'B'], 100000, data, parents))
+
+
+if __name__ == '__main__':
+    sys.argv.pop(0)
+    print(sys.argv)
+    _data, _parents = test.readdata(sys.argv[0])
+    _query = sys.argv[1]
+    _evidences = []
+    for i in range(2, len(sys.argv)):
+        if i % 2 == 0:
+            e = sys.argv[i]
+            if sys.argv[i + 1] == 'true':
+                _evidences.append(e.lower())
+            elif sys.argv[i + 1] == 'fasle':
+                _evidences.append('!' + e.lower())
+            else:
+                exit('invalid input')
+    variables = set()
+    for k in _data.keys():
+        variables.add(k.fore.strip('!').upper())
+    print(likelihood_weighting(_query, _evidences, list(variables), 500000, _data, _parents))
+

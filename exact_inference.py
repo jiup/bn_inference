@@ -1,6 +1,7 @@
 from test import *
 import sys
 
+
 def normalize(dist):
     result = []
     s = sum(dist)
@@ -49,8 +50,10 @@ def enumerate_all(variables, evidences, data):
         # parent_es on true_var and false_var always return same result
         for parent_e in parent_es(true_var, data):
             if parent_e.issubset(evidences):
-                return data[Probability(true_var, parent_e)] * enumerate_all(variables[1:], evidences + [true_var], data) + \
-                       data[Probability(false_var, parent_e)] * enumerate_all(variables[1:], evidences + [false_var], data)
+                return data[Probability(true_var, parent_e)] * enumerate_all(variables[1:], evidences + [true_var],
+                                                                             data) + \
+                       data[Probability(false_var, parent_e)] * enumerate_all(variables[1:], evidences + [false_var],
+                                                                              data)
 
     return enumerate_all(variables[1:] + [variables[0]], evidences, data)
 
@@ -73,5 +76,18 @@ def get_variables(query, evidences, data):
 # _query = 'A'
 # _evidences = ['!e', 'j', '!b', 'm']
 # print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
-if __name__ == '__main':
-    print(sys.argv)
+if __name__ == '__main__':
+    sys.argv.pop(0)
+    _data, _parents = readdata(sys.argv[0])
+    _query = sys.argv[1]
+    _evidences = []
+    for i in range(2, len(sys.argv)):
+        if i % 2 == 0:
+            e = sys.argv[i]
+            if sys.argv[i + 1] == 'true':
+                _evidences.append(e.lower())
+            elif sys.argv[i + 1] == 'fasle':
+                _evidences.append('!' + e.lower())
+            else:
+                exit('invalid input')
+    print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))

@@ -1,5 +1,7 @@
 import random
 from exact_inference import *
+import sys
+import test
 
 
 def in_e(a, evidence):
@@ -65,5 +67,26 @@ def gibbs_sampling(X, e, bn, parents, N):
     return result
 
 
-data, parents = readdata('aima-alarm.xml')
-print(gibbs_sampling('B', {'j', 'm'}, data, parents, 10000))
+# data, parents = readdata('aima-alarm.xml')
+# print(gibbs_sampling('B', {'j', 'm'}, data, parents, 10000))
+
+
+if __name__ == '__main__':
+    sys.argv.pop(0)
+    print(sys.argv)
+    _data, _parents = test.readdata(sys.argv[0])
+    _query = sys.argv[1]
+    _evidences = set()
+    for i in range(2, len(sys.argv)):
+        if i % 2 == 0:
+            e = sys.argv[i]
+            if sys.argv[i + 1] == 'true':
+                _evidences.add(e.lower())
+            elif sys.argv[i + 1] == 'false':
+                _evidences.add('!' + e.lower())
+            else:
+                exit('invalid input')
+    variables = set()
+    for k in _data.keys():
+        variables.add(k.fore.strip('!').upper())
+    print(gibbs_sampling(_query, _evidences, _data, _parents, 100000))

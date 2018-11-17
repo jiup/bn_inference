@@ -1,5 +1,7 @@
 import random
 import test
+import sys
+import exact_inference
 
 
 def prior_sample(bn=[], data={}, parents={}):
@@ -39,5 +41,25 @@ def rejection_sample(X='', e=[], bn=[], N=0, data={}, parents={}):
     return [x_true_count / x_count, x_false_count / x_count]
 
 
-data, parents = test.readdata('aima-alarm.xml')
-print(rejection_sample('B', ['j', 'm'], ['A', 'E', 'J', 'M', 'B'], 100000, data, parents))
+# data, parents = test.readdata('aima-alarm.xml')
+# print(rejection_sample('B', ['j', 'm'], ['A', 'E', 'J', 'M', 'B'], 100000, data, parents))
+
+if __name__ == '__main__':
+    sys.argv.pop(0)
+    print(sys.argv)
+    _data, _parents = test.readdata(sys.argv[0])
+    _query = sys.argv[1]
+    _evidences = []
+    for i in range(2, len(sys.argv)):
+        if i % 2 == 0:
+            e = sys.argv[i]
+            if sys.argv[i + 1] == 'true':
+                _evidences.append(e.lower())
+            elif sys.argv[i + 1] == 'fasle':
+                _evidences.append('!' + e.lower())
+            else:
+                exit('invalid input')
+    variables = set()
+    for k in _data.keys():
+        variables.add(k.fore.strip('!').upper())
+    print(rejection_sample(_query, _evidences, list(variables), 500000, _data, _parents))
