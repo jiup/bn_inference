@@ -1,5 +1,4 @@
-import test
-from test import Probability
+from test import *
 
 
 def normalize(dist):
@@ -70,8 +69,7 @@ def get_variables(query, evidences, data):
     return list(variables)
 
 
-_data, _parents = test.readdata('aima-alarm.xml')
-_query = 'A'
-_evidences = ['!e', 'j', '!b', 'm']
-print(get_variables(_query, _evidences, _data))
-print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
+# _data, _parents = readdata('aima-alarm.xml')
+# _query = 'A'
+# _evidences = ['!e', 'j', '!b', 'm']
+# print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))

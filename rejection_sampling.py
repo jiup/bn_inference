@@ -1,5 +1,4 @@
 import random
-import enumeration
 import test
 
 
@@ -14,7 +13,7 @@ def prior_sample(bn=[], data={}, parents={}):
                 given.discard(g)
                 given.add('!' + g)
 
-        p = enumeration.Probability(variable, given)
+        p = test.Probability(variable, given)
         probability = data[p]
         if probability < random.random():
             variable = '!' + variable
