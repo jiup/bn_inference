@@ -1,8 +1,7 @@
 import random
+from exact_inference import *
 
-from test import *
-import exact_inference
-import myenumeration
+
 def in_e(a, evidence):
     a = a.lower()
     for e in evidence:
@@ -12,6 +11,7 @@ def in_e(a, evidence):
             return 3
     return 1
 
+
 def get_parents(var, bn):
     result = set()
     for key in bn.keys():
@@ -20,7 +20,8 @@ def get_parents(var, bn):
                 result.add(given)
     return result
 
-def Gibbs_sampling(X, e, bn,parents, N):
+
+def gibbs_sampling(X, e, bn, parents, N):
     result = {X.lower(): 0, '!' + X.lower(): 0}
     sample = set()
     for k in bn.keys():
@@ -47,10 +48,8 @@ def Gibbs_sampling(X, e, bn,parents, N):
             for child in children:
                 children_parent = children_parent | (get_parents(child, bn) & set(tmp))
             enumerate_e = (parent | children | children_parent) - {sample[i]}
-            # print(sample[i].strip('!').upper(),enumerate_e)
-            p = exact_inference.enumerate_ask(sample[i].strip('!').upper(),exact_inference.get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), list(enumerate_e), bn)
-            me =myenumeration.enumeration_ask(sample[i].strip('!'),enumerate_e , bn)
-            # print(p,me)
+            p = enumerate_ask(sample[i].strip('!').upper(),
+                              get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), list(enumerate_e), bn)
             if rand_p < p[0]:
                 sample[i] = sample[i].strip('!')
             else:
@@ -62,9 +61,9 @@ def Gibbs_sampling(X, e, bn,parents, N):
         elif '!' + X.lower() in sample:
             result['!' + X.lower()] += 1
 
-    result = exact_inference.normalize([result[X.lower()],result['!' + X.lower()]])
+    result = normalize([result[X.lower()], result['!' + X.lower()]])
     return result
 
 
-data,parents = readdata('aima-alarm.xml')
-print(Gibbs_sampling('B', {'j', 'm'}, data,parents, 30000))
+data, parents = readdata('aima-alarm.xml')
+print(gibbs_sampling('B', {'j', 'm'}, data, parents, 100000))
