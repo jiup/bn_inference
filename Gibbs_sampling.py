@@ -2,7 +2,7 @@ import random
 
 from test import *
 import exact_inference
-
+import myenumeration
 def in_e(a, evidence):
     a = a.lower()
     for e in evidence:
@@ -47,9 +47,10 @@ def Gibbs_sampling(X, e, bn,parents, N):
             for child in children:
                 children_parent = children_parent | (get_parents(child, bn) & set(tmp))
             enumerate_e = (parent | children | children_parent) - {sample[i]}
-            print(sample[i].strip('!'),enumerate_e)
+            # print(sample[i].strip('!').upper(),enumerate_e)
             p = exact_inference.enumerate_ask(sample[i].strip('!').upper(),exact_inference.get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), list(enumerate_e), bn)
-
+            me =myenumeration.enumeration_ask(sample[i].strip('!'),enumerate_e , bn)
+            # print(p,me)
             if rand_p < p[0]:
                 sample[i] = sample[i].strip('!')
             else:
@@ -66,4 +67,4 @@ def Gibbs_sampling(X, e, bn,parents, N):
 
 
 data,parents = readdata('aima-alarm.xml')
-print(Gibbs_sampling('B', {'j', 'm'}, data,parents, 10000))
+print(Gibbs_sampling('B', {'j', 'm'}, data,parents, 30000))
