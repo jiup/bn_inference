@@ -1,9 +1,26 @@
 import random
 
-from Rejection_sampling import *
-import Enumeration
+from test import *
+import exact_inference
 
-def Gibbs_sampling(X, e, bn, N):
+def in_e(a, evidence):
+    a = a.lower()
+    for e in evidence:
+        if a == e:
+            return 2
+        elif ('!' + a == e or a.strip('!') == e) and (a != e):
+            return 3
+    return 1
+
+def get_parents(var, bn):
+    result = set()
+    for key in bn.keys():
+        if key.fore == var:
+            for given in key.given:
+                result.add(given)
+    return result
+
+def Gibbs_sampling(X, e, bn,parents, N):
     result = {X.lower(): 0, '!' + X.lower(): 0}
     sample = set()
     for k in bn.keys():
@@ -30,8 +47,10 @@ def Gibbs_sampling(X, e, bn, N):
             for child in children:
                 children_parent = children_parent | (get_parents(child, bn) & set(tmp))
             enumerate_e = (parent | children | children_parent) - {sample[i]}
-            p = Enumeration.enumeration_ask(sample[i].strip('!'),enumerate_e , bn)
-            if rand_p < p[sample[i].strip('!')]:
+            print(sample[i].strip('!'),enumerate_e)
+            p = exact_inference.enumerate_ask(sample[i].strip('!').upper(),exact_inference.get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), list(enumerate_e), bn)
+
+            if rand_p < p[0]:
                 sample[i] = sample[i].strip('!')
             else:
                 sample[i] = sample[i].strip('!')
@@ -42,9 +61,9 @@ def Gibbs_sampling(X, e, bn, N):
         elif '!' + X.lower() in sample:
             result['!' + X.lower()] += 1
 
-    normalize(result)
+    result = exact_inference.normalize([result[X.lower()],result['!' + X.lower()]])
     return result
 
 
-data = readdata('aima-alarm.xml')
-print(Gibbs_sampling('B', {'j', 'm'}, data, 2500))
+data,parents = readdata('aima-alarm.xml')
+print(Gibbs_sampling('B', {'j', 'm'}, data,parents, 10000))

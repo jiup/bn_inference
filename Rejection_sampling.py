@@ -1,4 +1,4 @@
-from Enumeration import *
+from myenumeration import *
 import random
 
 

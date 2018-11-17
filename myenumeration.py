@@ -92,5 +92,5 @@ def enumerate_all(variables, e, data):
     return sum_p
 
 
-data = readdata('aima-alarm.xml')
-# print(enumeration_ask("B", {"j", 'm'}, data))
+data,parents = readdata('aima-alarm.xml')
+print(enumeration_ask("B", {"j", 'm'}, data))
