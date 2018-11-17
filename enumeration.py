@@ -1,96 +1,78 @@
-import copy
-from test import *
+import test
+from test import Probability
 
-def in_e(a, evidence):
-    a = a.lower()
-    for e in evidence:
-        if a == e:
-            return 2
-        elif ('!' + a == e or a.strip('!') == e) and (a != e):
-            return 3
-    return 1
 
-def get_parents(var, bn):
-    result = set()
-    for key in bn.keys():
-        if key.fore == var:
-            for given in key.given:
-                result.add(given)
-    return result
+def Normalize(l=[]):
+    res = [0] * l.__len__()
+    sum = 0.0
+    for num in l:
+        sum += num
+    for i in range(l.__len__()):
+        res[i] = l[i] / sum
+    return res
 
-def tp_sort(vars, bn):
-    result = list()
-    while vars:
-        var = vars.pop(0)
-        parents = get_parents(var.lower(), bn)
-        if len(parents) > 0:
-            flg = 0
-            for parent in parents:
-                if parent.strip('!').upper() not in result:
-                    vars.append(var)
-                    flg = 1
-                    break
-            if flg == 0:
-                result.append(var)
-        else:
-            result.append(var)
-    result.reverse()
-    return result
 
-def enumeration_ask(X, e, bn):
-    variables = set()
-    for k in bn.keys():
-        variables.add(k.fore.strip('!').upper())
-    e_x = copy.copy(e)
-    e_x.add(X.lower())
-    e_not_x = copy.copy(e)
-    e_not_x.add('!' + X.lower())
-    result = dict()
-    result[X.lower()] = enumerate_all(copy.copy(tp_sort(list(variables), bn)), e_x, bn)
-    result['!' + X.lower()] = enumerate_all(copy.copy(tp_sort(list(variables), bn)), e_not_x, bn)
-    normalize(result)
-    return result
+def Enumeration_Ask(X='', e=[], bn=[], data={}, parents={}):
+    distribution = []
+    query_variable = []
+    query_variable.append(X.lower())
+    query_variable.append('!' + X.lower())
+    for queryvariable in query_variable:
+        tmp_e = e.copy()
+        tmp_bn = bn.copy()
+        tmp_e.append(queryvariable)
+        #        tmp_bn = [queryvariable]+tmp_bn
+        tmp_bn.append(queryvariable)
+        tmp_bn = test.sort(tmp_bn, parents)
+        dis = Enumeration_ALL(tmp_bn, tmp_e, data)
+        distribution.append(dis)
+    return Normalize(distribution)
 
-def normalize(result):
-    total = 0
-    for v in result.values():
-        total += v
-    for k in result.keys():
-        result[k] = result[k] / total
 
-def check(keys, e):
-    flg = True
-    for given in keys.given:
-        if in_e(given, e) == 3:
-            flg = False
-    return flg
+def match(s=set(), e=[]):
+    if (s.__len__() == 0): return True
+    for i in s:
+        if i not in e:
+            return False
+    return True
 
-def enumerate_all(variables, e, data):
-    if len(variables) < 1:
-        return 1.0
-    y = variables.pop()
-    sum_p = 0
-    if in_e(y, e) == 1:
-        e_y = copy.copy(e)
-        e_y.add(y.lower())
-        e_not_y = copy.copy(e)
-        e_not_y.add('!' + y.lower())
-        for keys, val in data.items():
-            if keys.fore == y.lower() and check(keys, e):
-                    sum_p += (float(val) * enumerate_all(copy.copy(variables), e_y, data))
-            elif ((keys.fore == '!' + y.lower()) or (keys.fore == y.lower().strip('!'))) and (keys.fore != y.lower()) and check(keys, e):
-                    sum_p += (float(val) * enumerate_all(copy.copy(variables), e_not_y, data))
+
+def Enumeration_ALL(bn, e, data):
+    if (bn.__len__() == 0): return 1
+    if bn[0] in e:
+        parents = []
+        for key in data.keys():
+            if (key.fore == bn[0]):
+                parents.append(key)
+        for parent in parents:
+            given = parent.given
+            if (match(given, e)):
+                rest = bn[1:]
+                return data[parent] * Enumeration_ALL(rest, e, data)
     else:
-        if in_e(y, e) == 2:
-            for keys, val in data.items():
-                if keys.fore == y.lower() and check(keys, e):
-                        sum_p += (float(val) * enumerate_all(variables, copy.copy(e), data))
-        else:
-            for keys, val in data.items():
-                if ((keys.fore == '!' + y.lower()) or (keys.fore == y.lower().strip('!'))) and (keys.fore != y.lower()) and check(keys, e):
-                        sum_p += (float(val) * enumerate_all(variables, copy.copy(e), data))
-    return sum_p
+        Variable = bn[0]
+        variable_true = Variable.lower()
+        variable_false = '!' + Variable.lower()
+        e_true = e.copy()
+        e_false = e.copy()
+        e_true.append(variable_true)
+        e_false.append(variable_false)
+        parents = []
+        given = set()
+        rest = []
+        for key in data.keys():
+            if (key.fore == variable_true):
+                parents.append(key)
+        for parent in parents:
+            tmp_given = parent.given
+            if (match(tmp_given, e)):
+                rest = bn[1:]
+                given = tmp_given
+        p_true = Probability(variable_true, given)
+        p_false = Probability(variable_false, given)
+        return data[p_true] * Enumeration_ALL(rest, e_true, data) + data[p_false] * Enumeration_ALL(rest, e_false, data)
 
 
-data = readdata('aima-alarm.xml')
-# print(enumeration_ask("B", {"j", 'm'}, data))
+data, parents = test.readdata('aima-alarm.xml')
+l = Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], data, parents)
+print(l)
