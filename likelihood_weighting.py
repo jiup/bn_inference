@@ -46,7 +46,7 @@ def weighted_sample(bn=[], e=[], data={}, parents={}):
 
 if __name__ == '__main__':
     sys.argv.pop(0)
-    print(sys.argv)
+    N = sys.argv.pop(0)
     _data, _parents = test.readdata(sys.argv[0])
     _query = sys.argv[1]
     _evidences = []
@@ -62,5 +62,6 @@ if __name__ == '__main__':
     variables = set()
     for k in _data.keys():
         variables.add(k.fore.strip('!').upper())
-    print(likelihood_weighting(_query, _evidences, list(variables), 500000, _data, _parents))
+    # print(_query, _evidences, list(variables), int(N))
+    print(likelihood_weighting(_query, _evidences, list(variables), int(N), _data, _parents))
 

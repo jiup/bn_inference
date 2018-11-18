@@ -73,7 +73,7 @@ def gibbs_sampling(X, e, bn, parents, N):
 
 if __name__ == '__main__':
     sys.argv.pop(0)
-    print(sys.argv)
+    N = sys.argv.pop(0)
     _data, _parents = test.readdata(sys.argv[0])
     _query = sys.argv[1]
     _evidences = set()
@@ -89,4 +89,4 @@ if __name__ == '__main__':
     variables = set()
     for k in _data.keys():
         variables.add(k.fore.strip('!').upper())
-    print(gibbs_sampling(_query, _evidences, _data, _parents, 100000))
+    print(gibbs_sampling(_query, _evidences, _data, _parents, int(N)))
