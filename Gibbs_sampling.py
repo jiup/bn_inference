@@ -96,4 +96,5 @@ if __name__ == '__main__':
     for k in _data.keys():
         variables.add(k.fore.strip('!').upper())
 
-    print(gibbs_sampling(_query, _evidences, _data, _parents, int(N)))
+    p = gibbs_sampling(_query, _evidences, _data, _parents, int(N))
+    print("("+_query.lower()+"|"+''.join(str(e) for e in _evidences)+") :", p[0], "(!"+_query.lower()+"|"+''.join(str(e) for e in _evidences)+") :", p[1])

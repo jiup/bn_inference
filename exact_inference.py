@@ -85,8 +85,9 @@ if __name__ == '__main__':
             e = sys.argv[i]
             if sys.argv[i + 1] == 'true':
                 _evidences.append(e.lower())
-            elif sys.argv[i + 1] == 'fasle':
+            elif sys.argv[i + 1] == 'false':
                 _evidences.append('!' + e.lower())
             else:
                 exit('invalid input')
-    print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))
+    p = enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data)
+    print("("+_query.lower()+"|"+','.join(str(e) for e in _evidences)+") :", p[0], "(!"+_query.lower()+"|"+','.join(str(e) for e in _evidences)+") :", p[1])

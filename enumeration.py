@@ -76,4 +76,4 @@ def Enumeration_ALL(bn, e, data):
 
 data, parents = xmlparser.readdata('aima-alarm.xml')
 l = Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], data, parents)
-print(l)
+# print(l)

@@ -55,7 +55,7 @@ if __name__ == '__main__':
             e = sys.argv[i]
             if sys.argv[i + 1] == 'true':
                 _evidences.append(e.lower())
-            elif sys.argv[i + 1] == 'fasle':
+            elif sys.argv[i + 1] == 'false':
                 _evidences.append('!' + e.lower())
             else:
                 exit('invalid input')
@@ -63,5 +63,6 @@ if __name__ == '__main__':
     for k in _data.keys():
         variables.add(k.fore.strip('!').upper())
     # print(_query, _evidences, list(variables), int(N))
-    print(likelihood_weighting(_query, _evidences, list(variables), int(N), _data, _parents))
+    p = likelihood_weighting(_query, _evidences, list(variables), int(N), _data, _parents)
+    print("("+_query.lower()+"|"+''.join(str(e) for e in _evidences)+") :", p[0], "(!"+_query.lower()+"|"+''.join(str(e) for e in _evidences)+") :", p[1])
 
