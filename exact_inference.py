@@ -1,6 +1,5 @@
-from test import *
+from xmlparser import *
 import sys
-
 
 def normalize(dist):
     result = []

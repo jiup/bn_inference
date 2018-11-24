@@ -1,5 +1,6 @@
-import test
-from test import Probability
+import xmlparser
+from xmlparser import Probability
+
 
 
 def Normalize(l=[]):
@@ -23,7 +24,7 @@ def Enumeration_Ask(X='', e=[], bn=[], data={}, parents={}):
         tmp_e.append(queryvariable)
         #        tmp_bn = [queryvariable]+tmp_bn
         tmp_bn.append(queryvariable)
-        tmp_bn = test.sort(tmp_bn, parents)
+        tmp_bn = xmlparser.sort(tmp_bn, parents)
         dis = Enumeration_ALL(tmp_bn, tmp_e, data)
         distribution.append(dis)
     return Normalize(distribution)
@@ -38,15 +39,15 @@ def match(s=set(), e=[]):
 
 
 def Enumeration_ALL(bn, e, data):
-    if (bn.__len__() == 0): return 1
+    if bn.__len__() == 0: return 1
     if bn[0] in e:
         parents = []
         for key in data.keys():
-            if (key.fore == bn[0]):
+            if key.fore == bn[0]:
                 parents.append(key)
         for parent in parents:
             given = parent.given
-            if (match(given, e)):
+            if match(given, e):
                 rest = bn[1:]
                 return data[parent] * Enumeration_ALL(rest, e, data)
     else:
@@ -73,6 +74,6 @@ def Enumeration_ALL(bn, e, data):
         return data[p_true] * Enumeration_ALL(rest, e_true, data) + data[p_false] * Enumeration_ALL(rest, e_false, data)
 
 
-data, parents = test.readdata('aima-alarm.xml')
+data, parents = xmlparser.readdata('aima-alarm.xml')
 l = Enumeration_Ask('B', ['j', 'm'], ['E', 'A', 'j', 'm'], data, parents)
 print(l)

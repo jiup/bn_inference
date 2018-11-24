@@ -1,4 +1,4 @@
-import test
+import xmlparser
 import random
 import sys
 
@@ -18,7 +18,7 @@ def likelihood_weighting(X='', e=[], bn=[], N=1000, data={}, parents={}):
 
 
 def weighted_sample(bn=[], e=[], data={}, parents={}):
-    bn = test.sort(bn, parents)
+    bn = xmlparser.sort(bn, parents)
     event = bn.copy()
     w = 1.0
     for i in range(bn.__len__()):
@@ -30,10 +30,10 @@ def weighted_sample(bn=[], e=[], data={}, parents={}):
     for i in range(event.__len__()):
         Variable = event[i]
         if Variable == Variable.lower():
-            w *= test.Prob(Variable, parents, data, event)
+            w *= xmlparser.Prob(Variable, parents, data, event)
         else:
             variable = Variable.lower()
-            prob = test.Prob(variable, parents, data, event)
+            prob = xmlparser.Prob(variable, parents, data, event)
             if random.random() > prob:
                 variable = '!' + variable
             event[i] = variable
@@ -47,7 +47,7 @@ def weighted_sample(bn=[], e=[], data={}, parents={}):
 if __name__ == '__main__':
     sys.argv.pop(0)
     N = sys.argv.pop(0)
-    _data, _parents = test.readdata(sys.argv[0])
+    _data, _parents = xmlparser.readdata(sys.argv[0])
     _query = sys.argv[1]
     _evidences = []
     for i in range(2, len(sys.argv)):

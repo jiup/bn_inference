@@ -1,8 +1,8 @@
 import random
 from exact_inference import *
+from enumeration import *
 import sys
-import test
-
+import xmlparser
 
 def in_e(a, evidence):
     a = a.lower()
@@ -37,6 +37,7 @@ def gibbs_sampling(X, e, bn, parents, N):
         else:
             sample[i] = '!' + sample[i].lower()
     tmp = sample + list(e)
+    add_bn = dict()
     for j in range(N):
         for i in range(len(sample)):
             rand_p = random.uniform(0, 1)
@@ -50,8 +51,13 @@ def gibbs_sampling(X, e, bn, parents, N):
             for child in children:
                 children_parent = children_parent | (get_parents(child, bn) & set(tmp))
             enumerate_e = (parent | children | children_parent) - {sample[i]}
-            p = enumerate_ask(sample[i].strip('!').upper(),
-                              get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), list(enumerate_e), bn)
+            pro = Probability(sample[i].strip('!').upper(),enumerate_e)
+            if pro in add_bn.keys():
+                p = add_bn[pro]
+            else:
+                p = Enumeration_Ask(sample[i].strip('!').upper(), list(enumerate_e),
+                                    get_variables(sample[i].strip('!').upper(), list(enumerate_e), bn), bn, parents)
+                add_bn[pro] = p
             if rand_p < p[0]:
                 sample[i] = sample[i].strip('!')
             else:
@@ -74,7 +80,7 @@ def gibbs_sampling(X, e, bn, parents, N):
 if __name__ == '__main__':
     sys.argv.pop(0)
     N = sys.argv.pop(0)
-    _data, _parents = test.readdata(sys.argv[0])
+    _data, _parents = xmlparser.readdata(sys.argv[0])
     _query = sys.argv[1]
     _evidences = set()
     for i in range(2, len(sys.argv)):
@@ -89,4 +95,5 @@ if __name__ == '__main__':
     variables = set()
     for k in _data.keys():
         variables.add(k.fore.strip('!').upper())
+
     print(gibbs_sampling(_query, _evidences, _data, _parents, int(N)))

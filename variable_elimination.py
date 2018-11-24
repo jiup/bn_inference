@@ -1,6 +1,6 @@
-import test
+import xmlparser
 from exact_inference import *
-from test import Probability
+from xmlparser import Probability
 
 
 def normalize(dist):
@@ -78,7 +78,7 @@ def cpt(var, tag, related_fores, variables, evidences,  data, parents, result):
         for fore in related_fores:
             if fore == var:
                 fore = v
-            p *= test.Prob(fore, parents, data, [v] + list(tag) + evidences)
+            p *= xmlparser.Prob(fore, parents, data, [v] + list(tag) + evidences)
             #print([v] + list(tag) + evidences, fore, '|', parents[fore], '=', test.Prob(fore, parents, data, [v] + list(tag) + evidences))
         # print('multiplied =', p)
         prob += p
@@ -161,7 +161,7 @@ def given_vars(variable, variables, data):
     return given
 
 
-_data, _parents = test.readdata('aima-alarm.xml')
+_data, _parents = xmlparser.readdata('aima-alarm.xml')
 _query = 'B'
 _evidences = ['j', 'm']
 # print(enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data))

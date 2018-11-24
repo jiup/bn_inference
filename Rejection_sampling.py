@@ -1,11 +1,11 @@
 import random
-import test
+import xmlparser
 import sys
 import exact_inference
 
 
 def prior_sample(bn=[], data={}, parents={}):
-    bn = test.sort(bn, parents)
+    bn = xmlparser.sort(bn, parents)
     for index in range(bn.__len__()):
         Variable = bn[index]
         variable = Variable.lower()
@@ -15,7 +15,7 @@ def prior_sample(bn=[], data={}, parents={}):
                 given.discard(g)
                 given.add('!' + g)
 
-        p = test.Probability(variable, given)
+        p = xmlparser.Probability(variable, given)
         probability = data[p]
         if probability < random.random():
             variable = '!' + variable
@@ -47,7 +47,7 @@ def rejection_sample(X='', e=[], bn=[], N=0, data={}, parents={}):
 if __name__ == '__main__':
     sys.argv.pop(0)
     N = sys.argv.pop(0)
-    _data, _parents = test.readdata(sys.argv[0])
+    _data, _parents = xmlparser.readdata(sys.argv[0])
     _query = sys.argv[1]
     _evidences = []
     for i in range(2, len(sys.argv)):
