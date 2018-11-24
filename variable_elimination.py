@@ -39,9 +39,9 @@ def elimination_ask(query, variables, evidences, data, parents):
         rest_variables, factor = make_factor(var, rest_variables, evidences, data, parents)
         if len(factor[0]) > 0:
             factors.append(factor)
-        if var != query and var.lower() not in evidences:
-            factors = sum_out(var, factors)
-    print(factors)
+        # if var != query and var.lower() not in evidences:
+        #     factors = sum_out(var, factors)
+    # print(factors)
     return
     # return normalize(pointwise_product(factors, variables))
 
@@ -55,7 +55,7 @@ def make_factor(var, variables, evidences, data, parents):
     tag.remove(var)
     cp_table = {}
     cpt(var, tag, related, variables, evidences, data, parents, cp_table)
-    # print('𝜓(' + ', '.join(tag) + ')', '=', cp_table)
+    print('𝜓(' + ', '.join(tag) + ')', '=', cp_table)
     return rest_variables, (tag, cp_table)
 
 
