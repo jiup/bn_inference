@@ -69,7 +69,7 @@ def gibbs_sampling(X, e, bn, parents, N):
         elif '!' + X.lower() in sample:
             result['!' + X.lower()] += 1
 
-    result = normalize([result[X.lower()], result['!' + X.lower()]])
+    result = Normalize([float(result[X.lower()]), float(result['!' + X.lower()])])
     return result
 
 
