@@ -1,6 +1,7 @@
 import random
 import xmlparser
 import sys
+import time
 import exact_inference
 
 
@@ -17,6 +18,7 @@ def prior_sample(bn=[], data={}, parents={}):
 
         p = xmlparser.Probability(variable, given)
         probability = data[p]
+        random.seed(time.time())
         if probability < random.random():
             variable = '!' + variable
         bn[index] = variable
@@ -38,6 +40,8 @@ def rejection_sample(X='', e=[], bn=[], N=0, data={}, parents={}):
             if x_false in event:
                 x_false_count += 1
     x_count = x_true_count + x_false_count
+    if x_count == 0:
+        return [0.5 , 0.5]
     return [x_true_count / x_count, x_false_count / x_count]
 
 

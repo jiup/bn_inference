@@ -3,6 +3,7 @@ from exact_inference import *
 from enumeration import *
 import sys
 import xmlparser
+import time
 
 def in_e(a, evidence):
     a = a.lower()
@@ -31,6 +32,7 @@ def gibbs_sampling(X, e, bn, parents, N):
             sample.add(k.fore.strip('!').upper())
     sample = list(sample)
     for i in range(len(sample)):
+        random.seed(time.time())
         rand_p = random.uniform(0, 1)
         if rand_p > 0.5:
             sample[i] = sample[i].lower()
@@ -40,6 +42,7 @@ def gibbs_sampling(X, e, bn, parents, N):
     add_bn = dict()
     for j in range(N):
         for i in range(len(sample)):
+            random.seed(time.time())
             rand_p = random.uniform(0, 1)
             children = set()
             for keys in bn.keys():
