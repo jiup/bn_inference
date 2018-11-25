@@ -90,4 +90,5 @@ if __name__ == '__main__':
             else:
                 exit('invalid input')
     p = enumerate_ask(_query, get_variables(_query, _evidences, _data), _evidences, _data)
+    # print([_query, get_variables(_query, _evidences, _data)], _evidences)
     print("("+_query.lower()+"|"+','.join(str(e) for e in _evidences)+") :", p[0], "(!"+_query.lower()+"|"+','.join(str(e) for e in _evidences)+") :", p[1])

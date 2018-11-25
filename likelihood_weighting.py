@@ -1,6 +1,7 @@
 import xmlparser
 import random
 import sys
+import time
 
 def likelihood_weighting(X='', e=[], bn=[], N=1000, data={}, parents={}):
     x_true = X.lower()
@@ -34,6 +35,7 @@ def weighted_sample(bn=[], e=[], data={}, parents={}):
         else:
             variable = Variable.lower()
             prob = xmlparser.Prob(variable, parents, data, event)
+            random.seed(time.time())
             if random.random() > prob:
                 variable = '!' + variable
             event[i] = variable
